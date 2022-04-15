@@ -1,9 +1,12 @@
 .register-form{
       margin: 0 auto;
       width: 50%;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: antiquewhite;
 }
 
-.register-form input{
+.register-form input:not([type=checkbox]){
       display: block;
       width: 100%;
       font-size: 20px;
