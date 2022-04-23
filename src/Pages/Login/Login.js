@@ -90,7 +90,7 @@ const Login = () => {
         </Form.Group>
 
         <Button
-          className="w-50 text-center mx-auto d-flex"
+          className="w-50 text-center  mx-auto d-flex"
           variant="primary"
           type="submit"
         >
