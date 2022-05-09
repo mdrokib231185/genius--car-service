@@ -1,14 +1,18 @@
 import React, { useRef } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import {
+  useSendPasswordResetEmail,
+  useSignInWithEmailAndPassword,
+} from "react-firebase-hooks/auth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../firebase.init";
 import Loading from "../Shared/Loading/Loading";
 import "./Login.css";
 import Social from "./Social/Social";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Login = () => {
   const emailRef = useRef("");
@@ -16,47 +20,47 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  
+
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
   const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
 
-  
-  
-  const handelSubmit = (event) => {
+  const handelSubmit = async (event) => {
     event.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     // console.log(email, password);
-    signInWithEmailAndPassword(email, password);
-    
+    await signInWithEmailAndPassword(email, password);
+    const { data } = await axios.post(
+      "https://boiling-wildwood-15479.herokuapp.com/login",
+      { email }
+    );
+    console.log(data);
+    localStorage.setItem("accessToken", data.accessToken);
+    navigate(from, { replace: true });
   };
- 
-  const SendPasswordReset = async() => {
+
+  const SendPasswordReset = async () => {
     const email = emailRef.current.value;
     if (email) {
       await sendPasswordResetEmail(email);
       toast("Sent Email");
     } else {
-      toast('Please Enter Your email')
+      toast("Please Enter Your email");
     }
-    
-  }
-
+  };
 
   if (user) {
-    navigate(from, { replace: true });
+    // navigate(from, { replace: true });
   }
   if (loading) {
-   return <Loading></Loading>
+    return <Loading></Loading>;
   }
- let errorElement;
-  if (error ) {
+  let errorElement;
+  if (error) {
     errorElement = (
       <div>
-        <p className="text-danger">
-          Error: {error?.message}
-        </p>
+        <p className="text-danger">Error: {error?.message}</p>
       </div>
     );
   }
@@ -112,7 +116,6 @@ const Login = () => {
       <p>
         ForgetPassword?{" "}
         <button
-          
           className="btn btn-link text-decoration-none"
           onClick={SendPasswordReset}
         >
@@ -120,7 +123,6 @@ const Login = () => {
         </button>
       </p>
       <Social></Social>
-      <ToastContainer/>
     </div>
   );
 };

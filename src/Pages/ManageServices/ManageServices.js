@@ -4,19 +4,19 @@ import useServices from "../Hooks/Hooks";
 const ManageServices = () => {
   const [services, setServices] = useServices();
 
-  const handelDelete = id => {
+  const handelDelete = (id) => {
     const proceed = window.confirm("Are You Sure ");
-        if (proceed) {
-              const url = `http://localhost:5000/service/${id}`;
-              fetch(url, {
-                    method: 'DELETE'
-              })
-                    .then(res => res.json())
-                    .then(data => {
-                          console.log(data)
-                          const remaining = services.filter(service => service._id !== id)
-                          setServices(remaining)
-              })
+    if (proceed) {
+      const url = `https://boiling-wildwood-15479.herokuapp.com/service/${id}`;
+      fetch(url, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          const remaining = services.filter((service) => service._id !== id);
+          setServices(remaining);
+        });
     }
   };
 
